@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../domain/exceptions/invalid_subject_exception.dart';
 import '../../domain/usecases/create_session_usecase.dart';
+import '../../domain/validators/subject_validator.dart';
 import '../../injection_container.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -18,6 +20,16 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isLoading = false;
   String? _errorMessage;
 
+  String? _validateSubject(String? value) {
+    final trimmed = value?.trim() ?? '';
+    if (trimmed.isEmpty) return 'Ingresa un usuario';
+    if (!SubjectValidator.isValid(trimmed)) {
+      return 'Usa entre ${SubjectValidator.minLength} y '
+          '${SubjectValidator.maxLength} caracteres (letras, números, "-" o "_")';
+    }
+    return null;
+  }
+
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -29,6 +41,8 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       await sl<CreateSessionUseCase>()(_subjectController.text.trim());
       if (mounted) context.go('/secure');
+    } on InvalidSubjectException catch (e) {
+      setState(() => _errorMessage = e.message);
     } catch (_) {
       setState(() => _errorMessage = 'No se pudo iniciar sesión');
     } finally {
@@ -56,9 +70,7 @@ class _LoginScreenState extends State<LoginScreen> {
               TextFormField(
                 controller: _subjectController,
                 decoration: const InputDecoration(labelText: 'Usuario'),
-                validator: (value) => (value == null || value.trim().isEmpty)
-                    ? 'Ingresa un usuario'
-                    : null,
+                validator: _validateSubject,
               ),
               const SizedBox(height: 16),
               if (_errorMessage != null)

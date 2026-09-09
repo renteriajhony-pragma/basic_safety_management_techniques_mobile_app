@@ -52,4 +52,19 @@ void main() {
     expect(find.text('Ingresa un usuario'), findsOneWidget);
     expect(repository.lastCreatedSubject, isNull);
   });
+
+  testWidgets('muestra un error de validación si el usuario tiene caracteres inválidos',
+      (tester) async {
+    await tester.pumpWidget(MaterialApp.router(routerConfig: buildRouter()));
+
+    await tester.enterText(find.byType(TextFormField), 'user@1');
+    await tester.tap(find.widgetWithText(ElevatedButton, 'Iniciar sesión'));
+    await tester.pump();
+
+    expect(
+      find.text('Usa entre 3 y 32 caracteres (letras, números, "-" o "_")'),
+      findsOneWidget,
+    );
+    expect(repository.lastCreatedSubject, isNull);
+  });
 }
