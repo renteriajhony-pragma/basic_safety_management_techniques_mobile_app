@@ -1,22 +1,22 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:security_app/data/datasources/token_datasource_impl.dart';
 import 'package:security_app/data/repositories/auth_repository_impl.dart';
-import 'package:security_app/data/services/token_service.dart';
 import 'package:security_app/domain/repositories/auth_repository.dart';
 
-import '../../helpers/fake_key_value_storage.dart';
+import '../../helpers/fake_secure_storage_datasource.dart';
 import '../../helpers/test_env.dart';
 
 void main() {
   late AuthRepository authRepository;
-  late FakeKeyValueStorage storage;
+  late FakeSecureStorageDatasource storageDatasource;
 
   setUpAll(loadTestEnv);
 
   setUp(() {
-    storage = FakeKeyValueStorage();
+    storageDatasource = FakeSecureStorageDatasource();
     authRepository = AuthRepositoryImpl(
-      tokenService: TokenService(),
-      storage: storage,
+      tokenDatasource: TokenDatasourceImpl(),
+      storageDatasource: storageDatasource,
     );
   });
 
@@ -43,7 +43,7 @@ void main() {
   });
 
   test('getSession retorna null cuando el token almacenado es inválido', () async {
-    await storage.save('auth_token', 'token-invalido');
+    await storageDatasource.save('auth_token', 'token-invalido');
 
     final session = await authRepository.getSession();
 

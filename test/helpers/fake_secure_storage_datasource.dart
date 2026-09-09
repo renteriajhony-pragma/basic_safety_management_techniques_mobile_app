@@ -1,6 +1,6 @@
-import 'package:security_app/data/services/key_value_storage.dart';
+import 'package:security_app/data/datasources/secure_storage_datasource.dart';
 
-class FakeKeyValueStorage implements KeyValueStorage {
+class FakeSecureStorageDatasource implements SecureStorageDatasource {
   final Map<String, String> _data = {};
 
   @override

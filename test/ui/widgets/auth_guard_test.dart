@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:security_app/data/datasources/token_datasource_impl.dart';
 import 'package:security_app/data/repositories/auth_repository_impl.dart';
-import 'package:security_app/data/services/token_service.dart';
 import 'package:security_app/domain/usecases/get_session_usecase.dart';
 import 'package:security_app/ui/widgets/auth_guard.dart';
 
-import '../../helpers/fake_key_value_storage.dart';
+import '../../helpers/fake_secure_storage_datasource.dart';
 import '../../helpers/test_env.dart';
 
 void main() {
@@ -13,8 +13,8 @@ void main() {
 
   Future<GetSessionUseCase> buildUseCaseWithSession({required bool valid}) async {
     final repository = AuthRepositoryImpl(
-      tokenService: TokenService(),
-      storage: FakeKeyValueStorage(),
+      tokenDatasource: TokenDatasourceImpl(),
+      storageDatasource: FakeSecureStorageDatasource(),
     );
 
     if (valid) {

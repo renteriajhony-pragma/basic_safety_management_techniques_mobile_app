@@ -1,9 +1,9 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-import 'key_value_storage.dart';
+import 'secure_storage_datasource.dart';
 
-class SecureStorageService implements KeyValueStorage {
-  SecureStorageService({FlutterSecureStorage? storage})
+class SecureStorageDatasourceImpl implements SecureStorageDatasource {
+  SecureStorageDatasourceImpl({FlutterSecureStorage? storage})
       : _storage = storage ?? const FlutterSecureStorage();
 
   final FlutterSecureStorage _storage;

@@ -1,49 +1,49 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:security_app/data/services/token_service.dart';
+import 'package:security_app/data/datasources/token_datasource_impl.dart';
 
 import '../../helpers/test_env.dart';
 
 void main() {
-  late TokenService tokenService;
+  late TokenDatasourceImpl tokenDatasource;
 
   setUpAll(loadTestEnv);
 
   setUp(() {
-    tokenService = TokenService();
+    tokenDatasource = TokenDatasourceImpl();
   });
 
   test('genera un JWT con el subject solicitado', () {
-    final token = tokenService.generateToken(subject: 'user-1');
+    final token = tokenDatasource.generateToken(subject: 'user-1');
 
     expect(token, isNotEmpty);
     expect(token.split('.'), hasLength(3));
   });
 
   test('valida un token recién generado', () {
-    final token = tokenService.generateToken(subject: 'user-1');
+    final token = tokenDatasource.generateToken(subject: 'user-1');
 
-    final claims = tokenService.validateToken(token);
+    final claims = tokenDatasource.validateToken(token);
 
     expect(claims, isNotNull);
     expect(claims!.payload['sub'], 'user-1');
   });
 
   test('rechaza un token expirado', () {
-    final token = tokenService.generateToken(
+    final token = tokenDatasource.generateToken(
       subject: 'user-1',
       expiresIn: const Duration(seconds: -1),
     );
 
-    final claims = tokenService.validateToken(token);
+    final claims = tokenDatasource.validateToken(token);
 
     expect(claims, isNull);
   });
 
   test('rechaza un token manipulado', () {
-    final token = tokenService.generateToken(subject: 'user-1');
+    final token = tokenDatasource.generateToken(subject: 'user-1');
     final tampered = '${token.substring(0, token.length - 1)}x';
 
-    final claims = tokenService.validateToken(tampered);
+    final claims = tokenDatasource.validateToken(tampered);
 
     expect(claims, isNull);
   });

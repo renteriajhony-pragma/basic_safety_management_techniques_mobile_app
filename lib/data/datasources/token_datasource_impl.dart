@@ -1,19 +1,20 @@
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 
+import '../config/security_config.dart';
 import '../models/token_claims.dart';
-import 'security_config.dart';
+import 'token_datasource.dart';
 
-class TokenService {
-  static const Duration defaultTokenLifetime = Duration(hours: 1);
-
+class TokenDatasourceImpl implements TokenDatasource {
+  @override
   String generateToken({
     required String subject,
-    Duration expiresIn = defaultTokenLifetime,
+    Duration expiresIn = TokenDatasource.defaultTokenLifetime,
   }) {
     final jwt = JWT({}, subject: subject);
     return jwt.sign(SecretKey(SecurityConfig.secretKey), expiresIn: expiresIn);
   }
 
+  @override
   TokenClaims? validateToken(String token) {
     try {
       final jwt = JWT.verify(token, SecretKey(SecurityConfig.secretKey));
