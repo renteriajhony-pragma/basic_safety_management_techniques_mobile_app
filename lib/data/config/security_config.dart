@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:cryptography/cryptography.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class SecurityConfig {
@@ -5,4 +8,7 @@ class SecurityConfig {
 
   static Duration get tokenLifetime =>
       Duration(minutes: dotenv.getInt('JWT_EXPIRATION_MINUTES'));
+
+  static SecretKey get encryptionKey =>
+      SecretKey(base64.decode(dotenv.get('ENCRYPTION_KEY')));
 }

@@ -1,5 +1,7 @@
 import 'package:get_it/get_it.dart';
 
+import 'data/datasources/encryption_datasource.dart';
+import 'data/datasources/encryption_datasource_impl.dart';
 import 'data/datasources/secure_storage_datasource.dart';
 import 'data/datasources/secure_storage_datasource_impl.dart';
 import 'data/datasources/token_datasource.dart';
@@ -13,8 +15,9 @@ final GetIt sl = GetIt.instance;
 
 void setupDependencies() {
   sl.registerLazySingleton<TokenDatasource>(TokenDatasourceImpl.new);
+  sl.registerLazySingleton<EncryptionDatasource>(EncryptionDatasourceImpl.new);
   sl.registerLazySingleton<SecureStorageDatasource>(
-    SecureStorageDatasourceImpl.new,
+    () => SecureStorageDatasourceImpl(encryptionDatasource: sl()),
   );
 
   sl.registerLazySingleton<AuthRepository>(
