@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../domain/entities/auth_session.dart';
 import '../../domain/entities/user_profile.dart';
+import '../../domain/exceptions/expired_session_exception.dart';
 import '../../domain/usecases/clear_session_usecase.dart';
 import '../../domain/usecases/get_user_profile_usecase.dart';
 import '../../domain/usecases/refresh_session_usecase.dart';
@@ -67,6 +68,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _remaining = _computeRemaining();
       });
       _startTimer();
+    } on ExpiredSessionException catch (e) {
+      setState(() => _errorMessage = e.message);
     } catch (_) {
       setState(() => _errorMessage = 'No se pudo refrescar la sesión');
     } finally {

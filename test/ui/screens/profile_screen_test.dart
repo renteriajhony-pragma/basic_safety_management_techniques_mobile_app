@@ -167,6 +167,30 @@ void main() {
     final session = AuthSession(
       token: 'token',
       subject: 'ana1',
+      expiresAt: DateTime.now().toUtc().add(const Duration(minutes: 5)),
+    );
+
+    await tester.pumpWidget(
+      MaterialApp.router(routerConfig: buildRouter(session)),
+    );
+    await tester.pump();
+    await tester.pump();
+
+    await tester.tap(find.widgetWithText(TextButton, 'Refrescar sesión'));
+    await tester.pump();
+    await tester.pump();
+
+    expect(authRepository.lastCreatedSubject, 'ana1');
+    expect(find.text('Sesión expirada'), findsNothing);
+  });
+
+  testWidgets(
+      'refrescar una sesión ya expirada muestra un mensaje y no crea un nuevo token',
+      (tester) async {
+    await registerSampleUser();
+    final session = AuthSession(
+      token: 'token',
+      subject: 'ana1',
       expiresAt: DateTime.now().toUtc().subtract(const Duration(seconds: 1)),
     );
 
@@ -182,8 +206,12 @@ void main() {
     await tester.pump();
     await tester.pump();
 
-    expect(authRepository.lastCreatedSubject, 'ana1');
-    expect(find.text('Sesión expirada'), findsNothing);
+    expect(
+      find.text('No puedes refrescar una sesión expirada. Vuelve a iniciar sesión.'),
+      findsOneWidget,
+    );
+    expect(authRepository.lastCreatedSubject, isNull);
+    expect(find.text('Sesión expirada'), findsOneWidget);
   });
 
   testWidgets('cerrar sesión borra el token y navega al login', (tester) async {
