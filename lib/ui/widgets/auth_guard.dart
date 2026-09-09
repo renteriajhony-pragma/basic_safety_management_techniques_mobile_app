@@ -7,11 +7,11 @@ class AuthGuard extends StatelessWidget {
   const AuthGuard({
     super.key,
     required this.getSessionUseCase,
-    required this.child,
+    required this.builder,
   });
 
   final GetSessionUseCase getSessionUseCase;
-  final Widget child;
+  final Widget Function(BuildContext context, AuthSession session) builder;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +27,7 @@ class AuthGuard extends StatelessWidget {
           return const Center(child: Text('Acceso no autorizado'));
         }
 
-        return child;
+        return builder(context, session);
       },
     );
   }

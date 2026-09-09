@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../domain/exceptions/invalid_subject_exception.dart';
-import '../../domain/usecases/create_session_usecase.dart';
-import '../../domain/validators/subject_validator.dart';
+import '../../domain/exceptions/invalid_credentials_exception.dart';
+import '../../domain/usecases/login_usecase.dart';
 import '../../injection_container.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -15,18 +14,14 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _subjectController = TextEditingController();
+  final _usuarioController = TextEditingController();
+  final _passwordController = TextEditingController();
 
   bool _isLoading = false;
   String? _errorMessage;
 
-  String? _validateSubject(String? value) {
-    final trimmed = value?.trim() ?? '';
-    if (trimmed.isEmpty) return 'Ingresa un usuario';
-    if (!SubjectValidator.isValid(trimmed)) {
-      return 'Usa entre ${SubjectValidator.minLength} y '
-          '${SubjectValidator.maxLength} caracteres (letras, números, "-" o "_")';
-    }
+  String? _requiredValidator(String? value, {required String label}) {
+    if (value == null || value.trim().isEmpty) return '$label es un campo obligatorio';
     return null;
   }
 
@@ -39,9 +34,12 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-      await sl<CreateSessionUseCase>()(_subjectController.text.trim());
-      if (mounted) context.go('/secure');
-    } on InvalidSubjectException catch (e) {
+      await sl<LoginUseCase>()(
+        usuario: _usuarioController.text.trim(),
+        password: _passwordController.text,
+      );
+      if (mounted) context.go('/profile');
+    } on InvalidCredentialsException catch (e) {
       setState(() => _errorMessage = e.message);
     } catch (_) {
       setState(() => _errorMessage = 'No se pudo iniciar sesión');
@@ -52,7 +50,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void dispose() {
-    _subjectController.dispose();
+    _usuarioController.dispose();
+    _passwordController.dispose();
     super.dispose();
   }
 
@@ -68,9 +67,16 @@ class _LoginScreenState extends State<LoginScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               TextFormField(
-                controller: _subjectController,
+                controller: _usuarioController,
                 decoration: const InputDecoration(labelText: 'Usuario'),
-                validator: _validateSubject,
+                validator: (v) => _requiredValidator(v, label: 'El usuario'),
+              ),
+              const SizedBox(height: 12),
+              TextFormField(
+                controller: _passwordController,
+                decoration: const InputDecoration(labelText: 'Contraseña'),
+                obscureText: true,
+                validator: (v) => _requiredValidator(v, label: 'La contraseña'),
               ),
               const SizedBox(height: 16),
               if (_errorMessage != null)
@@ -88,6 +94,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
                     : const Text('Iniciar sesión'),
+              ),
+              const SizedBox(height: 12),
+              TextButton(
+                onPressed: () => context.go('/register'),
+                child: const Text('¿No tienes cuenta? Regístrate'),
               ),
             ],
           ),

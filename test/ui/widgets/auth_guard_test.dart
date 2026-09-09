@@ -31,12 +31,12 @@ void main() {
     await tester.pumpWidget(MaterialApp(
       home: AuthGuard(
         getSessionUseCase: getSessionUseCase,
-        child: const Text('contenido protegido'),
+        builder: (context, session) => Text('contenido protegido: ${session.subject}'),
       ),
     ));
     await tester.pumpAndSettle();
 
-    expect(find.text('contenido protegido'), findsOneWidget);
+    expect(find.text('contenido protegido: user-1'), findsOneWidget);
   });
 
   testWidgets('muestra el mensaje de no autorizado cuando no hay sesión',
@@ -46,7 +46,7 @@ void main() {
     await tester.pumpWidget(MaterialApp(
       home: AuthGuard(
         getSessionUseCase: getSessionUseCase,
-        child: const Text('contenido protegido'),
+        builder: (context, session) => const Text('contenido protegido'),
       ),
     ));
     await tester.pumpAndSettle();

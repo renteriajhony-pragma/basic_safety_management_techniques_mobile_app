@@ -15,8 +15,8 @@ import 'data/repositories/user_repository_impl.dart';
 import 'domain/repositories/auth_repository.dart';
 import 'domain/repositories/user_repository.dart';
 import 'domain/usecases/clear_session_usecase.dart';
-import 'domain/usecases/create_session_usecase.dart';
 import 'domain/usecases/get_session_usecase.dart';
+import 'domain/usecases/get_user_profile_usecase.dart';
 import 'domain/usecases/login_usecase.dart';
 import 'domain/usecases/register_user_usecase.dart';
 
@@ -48,10 +48,10 @@ void setupDependencies() {
     ),
   );
 
-  sl.registerLazySingleton(() => CreateSessionUseCase(sl()));
   sl.registerLazySingleton(() => GetSessionUseCase(sl()));
   sl.registerLazySingleton(() => ClearSessionUseCase(sl()));
   sl.registerLazySingleton(() => RegisterUserUseCase(sl()));
+  sl.registerLazySingleton(() => GetUserProfileUseCase(sl()));
   sl.registerLazySingleton(
     () => LoginUseCase(userRepository: sl(), authRepository: sl()),
   );
