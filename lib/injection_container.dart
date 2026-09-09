@@ -18,6 +18,7 @@ import 'domain/usecases/clear_session_usecase.dart';
 import 'domain/usecases/get_session_usecase.dart';
 import 'domain/usecases/get_user_profile_usecase.dart';
 import 'domain/usecases/login_usecase.dart';
+import 'domain/usecases/refresh_session_usecase.dart';
 import 'domain/usecases/register_user_usecase.dart';
 
 final GetIt sl = GetIt.instance;
@@ -52,6 +53,7 @@ void setupDependencies() {
   sl.registerLazySingleton(() => ClearSessionUseCase(sl()));
   sl.registerLazySingleton(() => RegisterUserUseCase(sl()));
   sl.registerLazySingleton(() => GetUserProfileUseCase(sl()));
+  sl.registerLazySingleton(() => RefreshSessionUseCase(sl()));
   sl.registerLazySingleton(
     () => LoginUseCase(userRepository: sl(), authRepository: sl()),
   );

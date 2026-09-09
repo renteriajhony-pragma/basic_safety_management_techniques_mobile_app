@@ -21,7 +21,9 @@ class _LoginScreenState extends State<LoginScreen> {
   String? _errorMessage;
 
   String? _requiredValidator(String? value, {required String label}) {
-    if (value == null || value.trim().isEmpty) return '$label es un campo obligatorio';
+    if (value == null || value.trim().isEmpty) {
+      return '$label es un campo obligatorio';
+    }
     return null;
   }
 
@@ -60,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('Iniciar sesión')),
       body: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         child: Form(
           key: _formKey,
           child: Column(
@@ -80,10 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 16),
               if (_errorMessage != null)
-                Text(
-                  _errorMessage!,
-                  style: const TextStyle(color: Colors.red),
-                ),
+                Text(_errorMessage!, style: const TextStyle(color: Colors.red)),
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: _isLoading ? null : _submit,
