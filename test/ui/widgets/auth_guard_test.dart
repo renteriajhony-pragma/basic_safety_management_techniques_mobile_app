@@ -6,8 +6,11 @@ import 'package:security_app/domain/usecases/get_session_usecase.dart';
 import 'package:security_app/ui/widgets/auth_guard.dart';
 
 import '../../helpers/fake_key_value_storage.dart';
+import '../../helpers/test_env.dart';
 
 void main() {
+  setUpAll(loadTestEnv);
+
   Future<GetSessionUseCase> buildUseCaseWithSession({required bool valid}) async {
     final repository = AuthRepositoryImpl(
       tokenService: TokenService(),

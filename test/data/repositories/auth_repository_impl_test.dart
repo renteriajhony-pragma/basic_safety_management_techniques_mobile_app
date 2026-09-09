@@ -4,10 +4,13 @@ import 'package:security_app/data/services/token_service.dart';
 import 'package:security_app/domain/repositories/auth_repository.dart';
 
 import '../../helpers/fake_key_value_storage.dart';
+import '../../helpers/test_env.dart';
 
 void main() {
   late AuthRepository authRepository;
   late FakeKeyValueStorage storage;
+
+  setUpAll(loadTestEnv);
 
   setUp(() {
     storage = FakeKeyValueStorage();

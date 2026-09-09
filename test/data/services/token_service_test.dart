@@ -1,8 +1,12 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:security_app/data/services/token_service.dart';
 
+import '../../helpers/test_env.dart';
+
 void main() {
   late TokenService tokenService;
+
+  setUpAll(loadTestEnv);
 
   setUp(() {
     tokenService = TokenService();
