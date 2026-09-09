@@ -18,10 +18,10 @@ void main() {
   test('valida un token recién generado', () {
     final token = tokenService.generateToken(subject: 'user-1');
 
-    final jwt = tokenService.validateToken(token);
+    final claims = tokenService.validateToken(token);
 
-    expect(jwt, isNotNull);
-    expect(jwt!.subject, 'user-1');
+    expect(claims, isNotNull);
+    expect(claims!.payload['sub'], 'user-1');
   });
 
   test('rechaza un token expirado', () {
@@ -30,17 +30,17 @@ void main() {
       expiresIn: const Duration(seconds: -1),
     );
 
-    final jwt = tokenService.validateToken(token);
+    final claims = tokenService.validateToken(token);
 
-    expect(jwt, isNull);
+    expect(claims, isNull);
   });
 
   test('rechaza un token manipulado', () {
     final token = tokenService.generateToken(subject: 'user-1');
     final tampered = '${token.substring(0, token.length - 1)}x';
 
-    final jwt = tokenService.validateToken(tampered);
+    final claims = tokenService.validateToken(tampered);
 
-    expect(jwt, isNull);
+    expect(claims, isNull);
   });
 }

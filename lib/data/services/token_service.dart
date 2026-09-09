@@ -1,5 +1,6 @@
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 
+import '../models/token_claims.dart';
 import 'security_config.dart';
 
 class TokenService {
@@ -13,9 +14,13 @@ class TokenService {
     return jwt.sign(SecretKey(SecurityConfig.secretKey), expiresIn: expiresIn);
   }
 
-  JWT? validateToken(String token) {
+  TokenClaims? validateToken(String token) {
     try {
-      return JWT.verify(token, SecretKey(SecurityConfig.secretKey));
+      final jwt = JWT.verify(token, SecretKey(SecurityConfig.secretKey));
+      return TokenClaims(
+        token: token,
+        payload: Map<String, dynamic>.from(jwt.payload as Map),
+      );
     } on JWTException {
       return null;
     }

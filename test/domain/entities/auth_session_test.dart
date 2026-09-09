@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:security_app/domain/models/auth_session.dart';
+import 'package:security_app/domain/entities/auth_session.dart';
 
 void main() {
   test('es válida cuando la fecha de expiración está en el futuro', () {

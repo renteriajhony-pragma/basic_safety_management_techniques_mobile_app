@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:security_app/data/repositories/auth_repository.dart';
+import 'package:security_app/data/repositories/auth_repository_impl.dart';
 import 'package:security_app/data/services/token_service.dart';
+import 'package:security_app/domain/usecases/get_session_usecase.dart';
 import 'package:security_app/ui/widgets/auth_guard.dart';
 
 import '../../helpers/fake_key_value_storage.dart';
 
 void main() {
-  Future<AuthRepository> buildRepositoryWithSession({
-    required bool valid,
-  }) async {
-    final repository = AuthRepository(
+  Future<GetSessionUseCase> buildUseCaseWithSession({required bool valid}) async {
+    final repository = AuthRepositoryImpl(
       tokenService: TokenService(),
       storage: FakeKeyValueStorage(),
     );
@@ -19,16 +18,16 @@ void main() {
       await repository.createSession('user-1');
     }
 
-    return repository;
+    return GetSessionUseCase(repository);
   }
 
   testWidgets('muestra el contenido protegido cuando hay una sesión válida',
       (tester) async {
-    final repository = await buildRepositoryWithSession(valid: true);
+    final getSessionUseCase = await buildUseCaseWithSession(valid: true);
 
     await tester.pumpWidget(MaterialApp(
       home: AuthGuard(
-        authRepository: repository,
+        getSessionUseCase: getSessionUseCase,
         child: const Text('contenido protegido'),
       ),
     ));
@@ -39,11 +38,11 @@ void main() {
 
   testWidgets('muestra el mensaje de no autorizado cuando no hay sesión',
       (tester) async {
-    final repository = await buildRepositoryWithSession(valid: false);
+    final getSessionUseCase = await buildUseCaseWithSession(valid: false);
 
     await tester.pumpWidget(MaterialApp(
       home: AuthGuard(
-        authRepository: repository,
+        getSessionUseCase: getSessionUseCase,
         child: const Text('contenido protegido'),
       ),
     ));

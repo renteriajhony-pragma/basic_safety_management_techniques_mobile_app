@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:security_app/data/repositories/auth_repository.dart';
+import 'package:security_app/data/repositories/auth_repository_impl.dart';
 import 'package:security_app/data/services/token_service.dart';
+import 'package:security_app/domain/repositories/auth_repository.dart';
 
 import '../../helpers/fake_key_value_storage.dart';
 
@@ -10,7 +11,7 @@ void main() {
 
   setUp(() {
     storage = FakeKeyValueStorage();
-    authRepository = AuthRepository(
+    authRepository = AuthRepositoryImpl(
       tokenService: TokenService(),
       storage: storage,
     );
