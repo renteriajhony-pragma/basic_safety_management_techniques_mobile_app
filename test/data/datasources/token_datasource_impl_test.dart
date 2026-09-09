@@ -47,4 +47,16 @@ void main() {
 
     expect(claims, isNull);
   });
+
+  test('incluye los claims adicionales solicitados', () async {
+    final token = await tokenDatasource.generateToken(
+      subject: 'user-1',
+      extraClaims: {'given_name': 'Ana', 'family_name': 'Gómez'},
+    );
+
+    final claims = await tokenDatasource.validateToken(token);
+
+    expect(claims!.payload['given_name'], 'Ana');
+    expect(claims.payload['family_name'], 'Gómez');
+  });
 }

@@ -25,7 +25,13 @@ class AuthRepositoryImpl implements AuthRepository {
     String? givenName,
     String? familyName,
   }) async {
-    final token = await _tokenDatasource.generateToken(subject: subject);
+    final token = await _tokenDatasource.generateToken(
+      subject: subject,
+      extraClaims: {
+        'given_name': ?givenName,
+        'family_name': ?familyName,
+      },
+    );
     await _storageDatasource.save(_tokenStorageKey, token);
     return (await _sessionFromToken(token))!;
   }

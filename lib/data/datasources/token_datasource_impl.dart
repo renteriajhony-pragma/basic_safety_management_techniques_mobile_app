@@ -16,10 +16,11 @@ class TokenDatasourceImpl implements TokenDatasource {
   @override
   Future<String> generateToken({
     required String subject,
+    Map<String, dynamic> extraClaims = const {},
     Duration? expiresIn,
   }) async {
     final secret = await _secretsDatasource.getOrCreate(_jwtSecretKey);
-    final jwt = JWT({}, subject: subject);
+    final jwt = JWT(Map<String, dynamic>.from(extraClaims), subject: subject);
     return jwt.sign(
       SecretKey(secret),
       expiresIn: expiresIn ?? SecurityConfig.tokenLifetime,

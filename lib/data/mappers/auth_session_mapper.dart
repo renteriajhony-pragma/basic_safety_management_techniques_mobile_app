@@ -14,6 +14,8 @@ class AuthSessionMapper {
         (expSeconds * 1000).toInt(),
         isUtc: true,
       ),
+      givenName: claims.payload['given_name'] as String?,
+      familyName: claims.payload['family_name'] as String?,
     );
   }
 }

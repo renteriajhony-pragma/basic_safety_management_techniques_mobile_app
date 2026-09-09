@@ -16,4 +16,22 @@ void main() {
     expect(session.subject, 'user-1');
     expect(session.expiresAt, DateTime.fromMillisecondsSinceEpoch(2000000000000, isUtc: true));
   });
+
+  test('extrae given_name y family_name cuando están presentes', () {
+    const mapper = AuthSessionMapper();
+    final claims = TokenClaims(
+      token: 'token-123',
+      payload: {
+        'sub': 'user-1',
+        'exp': 2000000000,
+        'given_name': 'Ana',
+        'family_name': 'Gómez',
+      },
+    );
+
+    final session = mapper.toEntity(claims);
+
+    expect(session.givenName, 'Ana');
+    expect(session.familyName, 'Gómez');
+  });
 }
