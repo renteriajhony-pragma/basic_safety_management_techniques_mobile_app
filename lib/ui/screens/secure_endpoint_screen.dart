@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 
-class SecureEndpoint extends StatelessWidget {
+class SecureEndpointScreen extends StatelessWidget {
+  const SecureEndpointScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Endpoint Protegido'),
+        title: const Text('Endpoint Protegido'),
       ),
-      body: Center(
+      body: const Center(
         child: Text('Este es un endpoint protegido'),
       ),
     );
