@@ -49,4 +49,12 @@ void main() {
 
     expect(session, isNull);
   });
+
+  test('clearSession elimina el token almacenado', () async {
+    await authRepository.createSession('user-1');
+
+    await authRepository.clearSession();
+
+    expect(await authRepository.getSession(), isNull);
+  });
 }

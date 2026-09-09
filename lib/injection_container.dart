@@ -8,6 +8,7 @@ import 'data/datasources/token_datasource.dart';
 import 'data/datasources/token_datasource_impl.dart';
 import 'data/repositories/auth_repository_impl.dart';
 import 'domain/repositories/auth_repository.dart';
+import 'domain/usecases/clear_session_usecase.dart';
 import 'domain/usecases/create_session_usecase.dart';
 import 'domain/usecases/get_session_usecase.dart';
 
@@ -29,4 +30,5 @@ void setupDependencies() {
 
   sl.registerLazySingleton(() => CreateSessionUseCase(sl()));
   sl.registerLazySingleton(() => GetSessionUseCase(sl()));
+  sl.registerLazySingleton(() => ClearSessionUseCase(sl()));
 }

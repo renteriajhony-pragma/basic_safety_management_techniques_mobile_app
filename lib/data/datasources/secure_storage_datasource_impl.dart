@@ -8,7 +8,15 @@ class SecureStorageDatasourceImpl implements SecureStorageDatasource {
     required EncryptionDatasource encryptionDatasource,
     FlutterSecureStorage? storage,
   })  : _encryptionDatasource = encryptionDatasource,
-        _storage = storage ?? const FlutterSecureStorage();
+        _storage = storage ??
+            const FlutterSecureStorage(
+              // The token never needs to survive a restore onto another
+              // device, and this app only reads it in the foreground, so
+              // the strictest non-biometric Keychain accessibility applies.
+              iOptions: IOSOptions(
+                accessibility: KeychainAccessibility.unlocked_this_device,
+              ),
+            );
 
   final EncryptionDatasource _encryptionDatasource;
   final FlutterSecureStorage _storage;

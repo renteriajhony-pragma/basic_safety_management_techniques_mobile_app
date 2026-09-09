@@ -33,6 +33,9 @@ class AuthRepositoryImpl implements AuthRepository {
     return _sessionFromToken(token);
   }
 
+  @override
+  Future<void> clearSession() => _storageDatasource.delete(_tokenStorageKey);
+
   AuthSession? _sessionFromToken(String token) {
     final claims = _tokenDatasource.validateToken(token);
     if (claims == null) return null;
