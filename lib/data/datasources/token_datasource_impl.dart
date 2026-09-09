@@ -8,10 +8,13 @@ class TokenDatasourceImpl implements TokenDatasource {
   @override
   String generateToken({
     required String subject,
-    Duration expiresIn = TokenDatasource.defaultTokenLifetime,
+    Duration? expiresIn,
   }) {
     final jwt = JWT({}, subject: subject);
-    return jwt.sign(SecretKey(SecurityConfig.secretKey), expiresIn: expiresIn);
+    return jwt.sign(
+      SecretKey(SecurityConfig.secretKey),
+      expiresIn: expiresIn ?? SecurityConfig.tokenLifetime,
+    );
   }
 
   @override

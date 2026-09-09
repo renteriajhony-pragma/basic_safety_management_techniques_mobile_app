@@ -1,11 +1,11 @@
 import '../models/token_claims.dart';
 
 abstract interface class TokenDatasource {
-  static const Duration defaultTokenLifetime = Duration(hours: 1);
-
+  /// When [expiresIn] is omitted, the implementation falls back to the
+  /// token lifetime configured via environment variables.
   String generateToken({
     required String subject,
-    Duration expiresIn = defaultTokenLifetime,
+    Duration? expiresIn,
   });
 
   TokenClaims? validateToken(String token);
