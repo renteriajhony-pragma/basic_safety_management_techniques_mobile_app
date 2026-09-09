@@ -81,8 +81,8 @@ class _SectionLabel extends StatelessWidget {
       child: Text(
         text,
         style: Theme.of(context).textTheme.titleSmall?.copyWith(
-              color: Theme.of(context).colorScheme.primary,
-            ),
+          color: Theme.of(context).colorScheme.primary,
+        ),
       ),
     );
   }
@@ -102,7 +102,10 @@ class _ProfileField extends StatelessWidget {
         children: [
           Expanded(child: Text(label)),
           Expanded(
-            child: Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
+            child: Text(
+              value,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
           ),
         ],
       ),
