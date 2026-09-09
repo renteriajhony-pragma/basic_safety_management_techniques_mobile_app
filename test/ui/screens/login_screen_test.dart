@@ -35,7 +35,7 @@ void main() {
     await tester.pumpWidget(MaterialApp.router(routerConfig: buildRouter()));
 
     await tester.enterText(find.byType(TextFormField), 'user-1');
-    await tester.tap(find.text('Iniciar sesión'));
+    await tester.tap(find.widgetWithText(ElevatedButton, 'Iniciar sesión'));
     await tester.pumpAndSettle();
 
     expect(find.text('pantalla protegida'), findsOneWidget);
@@ -46,7 +46,7 @@ void main() {
       (tester) async {
     await tester.pumpWidget(MaterialApp.router(routerConfig: buildRouter()));
 
-    await tester.tap(find.text('Iniciar sesión'));
+    await tester.tap(find.widgetWithText(ElevatedButton, 'Iniciar sesión'));
     await tester.pump();
 
     expect(find.text('Ingresa un usuario'), findsOneWidget);
