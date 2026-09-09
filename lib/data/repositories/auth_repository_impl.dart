@@ -20,7 +20,11 @@ class AuthRepositoryImpl implements AuthRepository {
   final AuthSessionMapper _mapper;
 
   @override
-  Future<AuthSession> createSession(String subject) async {
+  Future<AuthSession> createSession(
+    String subject, {
+    String? givenName,
+    String? familyName,
+  }) async {
     final token = await _tokenDatasource.generateToken(subject: subject);
     await _storageDatasource.save(_tokenStorageKey, token);
     return (await _sessionFromToken(token))!;
