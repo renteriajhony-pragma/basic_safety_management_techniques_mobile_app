@@ -21,9 +21,9 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<AuthSession> createSession(String subject) async {
-    final token = _tokenDatasource.generateToken(subject: subject);
+    final token = await _tokenDatasource.generateToken(subject: subject);
     await _storageDatasource.save(_tokenStorageKey, token);
-    return _sessionFromToken(token)!;
+    return (await _sessionFromToken(token))!;
   }
 
   @override
@@ -36,8 +36,8 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<void> clearSession() => _storageDatasource.delete(_tokenStorageKey);
 
-  AuthSession? _sessionFromToken(String token) {
-    final claims = _tokenDatasource.validateToken(token);
+  Future<AuthSession?> _sessionFromToken(String token) async {
+    final claims = await _tokenDatasource.validateToken(token);
     if (claims == null) return null;
     return _mapper.toEntity(claims);
   }

@@ -3,19 +3,19 @@ import 'package:security_app/data/datasources/token_datasource_impl.dart';
 import 'package:security_app/data/repositories/auth_repository_impl.dart';
 import 'package:security_app/domain/repositories/auth_repository.dart';
 
+import '../../helpers/fake_secrets_datasource.dart';
 import '../../helpers/fake_secure_storage_datasource.dart';
-import '../../helpers/test_env.dart';
 
 void main() {
   late AuthRepository authRepository;
   late FakeSecureStorageDatasource storageDatasource;
 
-  setUpAll(loadTestEnv);
-
   setUp(() {
     storageDatasource = FakeSecureStorageDatasource();
     authRepository = AuthRepositoryImpl(
-      tokenDatasource: TokenDatasourceImpl(),
+      tokenDatasource: TokenDatasourceImpl(
+        secretsDatasource: FakeSecretsDatasource(),
+      ),
       storageDatasource: storageDatasource,
     );
   });

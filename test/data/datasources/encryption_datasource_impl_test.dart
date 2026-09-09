@@ -1,15 +1,15 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:security_app/data/datasources/encryption_datasource_impl.dart';
 
-import '../../helpers/test_env.dart';
+import '../../helpers/fake_secrets_datasource.dart';
 
 void main() {
   late EncryptionDatasourceImpl encryptionDatasource;
 
-  setUpAll(loadTestEnv);
-
   setUp(() {
-    encryptionDatasource = EncryptionDatasourceImpl();
+    encryptionDatasource = EncryptionDatasourceImpl(
+      secretsDatasource: FakeSecretsDatasource(),
+    );
   });
 
   test('descifra lo que fue cifrado y obtiene el texto original', () async {

@@ -4,20 +4,20 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:security_app/data/datasources/encryption_datasource_impl.dart';
 import 'package:security_app/data/datasources/secure_storage_datasource_impl.dart';
 
-import '../../helpers/test_env.dart';
+import '../../helpers/fake_secrets_datasource.dart';
 
 void main() {
   late SecureStorageDatasourceImpl datasource;
   late Map<String, String> rawPlatformData;
-
-  setUpAll(loadTestEnv);
 
   setUp(() {
     rawPlatformData = {};
     FlutterSecureStoragePlatform.instance =
         TestFlutterSecureStoragePlatform(rawPlatformData);
     datasource = SecureStorageDatasourceImpl(
-      encryptionDatasource: EncryptionDatasourceImpl(),
+      encryptionDatasource: EncryptionDatasourceImpl(
+        secretsDatasource: FakeSecretsDatasource(),
+      ),
     );
   });
 
