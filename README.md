@@ -4,6 +4,9 @@ Aplicación móvil Flutter que implementa técnicas de seguridad para proteger l
 
 Para el detalle de qué se resolvió, la arquitectura del proyecto, los algoritmos utilizados y los diagramas de los flujos principales, ver [`docs/arquitectura-y-seguridad.md`](docs/arquitectura-y-seguridad.md). Para el modelo de amenazas y las recomendaciones de seguridad a largo plazo, ver [`docs/SECURITY.md`](docs/SECURITY.md).
 
+![](docs/assets/20260915_153550_arquitectura-de-autenticaci-n-clean.svg)
+
+
 ## Requisitos
 
 - [Flutter SDK](https://docs.flutter.dev/get-started/install) 3.41.x o superior (Dart >= 3.8.0, según `pubspec.yaml`).
