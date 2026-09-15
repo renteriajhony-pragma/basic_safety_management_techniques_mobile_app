@@ -2,20 +2,22 @@
 
 Este documento explica qué problema resuelve la aplicación, cómo está organizado el código, qué algoritmos de seguridad se usan y por qué, y cómo fluye la información en cada operación principal (registro, inicio de sesión, visualización del perfil, refresco y cierre de sesión).
 
-Para el modelo de amenazas, los gaps aceptados y las recomendaciones de build para producción, ver [`SECURITY.md`](../../SECURITY.md) en la raíz del proyecto.
+Para el modelo de amenazas, los gaps aceptados y las recomendaciones de build para producción, ver [`SECURITY.md`](SECURITY.md) en la raíz del proyecto.
 
 ## Contenido
 
-- [Qué resuelve la aplicación](#qué-resuelve-la-aplicación)
-- [Arquitectura del proyecto](#arquitectura-del-proyecto)
-- [Estructura de carpetas](#estructura-de-carpetas)
-- [Manejo de tokens de autenticación (JWT)](#manejo-de-tokens-de-autenticación-jwt)
-- [Cifrado de datos sensibles](#cifrado-de-datos-sensibles)
-- [Almacenamiento seguro en el dispositivo](#almacenamiento-seguro-en-el-dispositivo)
-- [Registro e inicio de sesión de usuarios](#registro-e-inicio-de-sesión-de-usuarios)
-- [Sesión: cuenta regresiva, refresco y expiración](#sesión-cuenta-regresiva-refresco-y-expiración)
-- [Gestión de secretos y hardening adicional](#gestión-de-secretos-y-hardening-adicional)
-- [Algoritmos utilizados (resumen)](#algoritmos-utilizados-resumen)
+- [Arquitectura y seguridad de la aplicación](#arquitectura-y-seguridad-de-la-aplicación)
+  - [Contenido](#contenido)
+  - [Qué resuelve la aplicación](#qué-resuelve-la-aplicación)
+  - [Arquitectura del proyecto](#arquitectura-del-proyecto)
+  - [Estructura de carpetas](#estructura-de-carpetas)
+  - [Manejo de tokens de autenticación (JWT)](#manejo-de-tokens-de-autenticación-jwt)
+  - [Cifrado de datos sensibles](#cifrado-de-datos-sensibles)
+  - [Almacenamiento seguro en el dispositivo](#almacenamiento-seguro-en-el-dispositivo)
+  - [Registro e inicio de sesión de usuarios](#registro-e-inicio-de-sesión-de-usuarios)
+  - [Sesión: cuenta regresiva, refresco y expiración](#sesión-cuenta-regresiva-refresco-y-expiración)
+  - [Gestión de secretos y hardening adicional](#gestión-de-secretos-y-hardening-adicional)
+  - [Algoritmos utilizados (resumen)](#algoritmos-utilizados-resumen)
 
 ## Qué resuelve la aplicación
 
@@ -28,15 +30,19 @@ La app necesita manejar información de usuarios (credenciales, documento de ide
 
 Las tres técnicas de protección de datos se muestran, una junto a otra, en la misma pantalla de perfil:
 
-| Técnica | Es reversible | Dónde se usa |
-|---|---|---|
-| Hash (Argon2id) | No — solo se puede verificar, nunca recuperar | Contraseña del usuario |
-| Cifrado simétrico (AES-GCM) | Sí — se descifra con la clave correcta | Token de sesión, perfil del usuario (documento, sexo, token de recuperación, usuario) |
-| Claims de un JWT firmado | No aplica (no es secreto, es verificable) | Nombre y apellido, embebidos en el token en el momento del login |
+
+| Técnica                     | Es reversible                                  | Dónde se usa                                                                           |
+| ---------------------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------- |
+| Hash (Argon2id)              | No — solo se puede verificar, nunca recuperar | Contraseña del usuario                                                                 |
+| Cifrado simétrico (AES-GCM) | Sí — se descifra con la clave correcta       | Token de sesión, perfil del usuario (documento, sexo, token de recuperación, usuario) |
+| Claims de un JWT firmado     | No aplica (no es secreto, es verificable)      | Nombre y apellido, embebidos en el token en el momento del login                        |
 
 ## Arquitectura del proyecto
 
 El proyecto sigue **Clean Architecture** con tres capas y una regla de dependencia estricta: la UI depende del dominio, el dominio no depende de nada externo, y la capa de datos implementa los puertos que el dominio define.
+
+![](assets/20260915_153550_arquitectura-de-autenticaci-n-clean.svg)
+
 
 ```mermaid
 flowchart TD
@@ -237,12 +243,13 @@ sequenceDiagram
 
 Reglas de validación (defensa en profundidad: se aplican tanto en el formulario como en el caso de uso, para que nadie pueda saltárselas llamando al caso de uso directamente):
 
-| Campo | Regla |
-|---|---|
-| Usuario | 3 a 32 caracteres; solo letras, números, `-` y `_` |
-| Contraseña | 8 a 64 caracteres, sin restricción de símbolos (limitar el charset reduce la entropía) |
-| Token de recuperación | Exactamente 4 dígitos |
-| Resto de campos | Obligatorios (no vacíos) |
+
+| Campo                  | Regla                                                                                     |
+| ---------------------- | ----------------------------------------------------------------------------------------- |
+| Usuario                | 3 a 32 caracteres; solo letras, números,`-` y `_`                                        |
+| Contraseña            | 8 a 64 caracteres, sin restricción de símbolos (limitar el charset reduce la entropía) |
+| Token de recuperación | Exactamente 4 dígitos                                                                    |
+| Resto de campos        | Obligatorios (no vacíos)                                                                 |
 
 El inicio de sesión (ver diagrama en la sección anterior) verifica las credenciales contra lo guardado en el registro — nunca compara contraseñas en texto plano, siempre recalcula el hash del valor ingresado y lo compara contra el guardado.
 
@@ -276,14 +283,15 @@ Otras medidas adicionales:
 - **Bloqueo de capturas de pantalla y grabación de pantalla en Android** (`FLAG_SECURE` en `MainActivity`), y ocultamiento del contenido en la miniatura del selector de apps recientes, mientras la app maneja el token de sesión.
 - **Expiración y refresco explícito de la sesión** (ver sección anterior), en vez de dejar un token válido indefinidamente.
 
-El detalle de qué queda fuera de alcance (por ejemplo, que iOS no tiene un equivalente directo a `FLAG_SECURE`) y las recomendaciones para producción están en [`SECURITY.md`](../../SECURITY.md).
+El detalle de qué queda fuera de alcance (por ejemplo, que iOS no tiene un equivalente directo a `FLAG_SECURE`) y las recomendaciones para producción están en [`SECURITY.md`](SECURITY.md).
 
 ## Algoritmos utilizados (resumen)
 
-| Propósito | Algoritmo | Paquete |
-|---|---|---|
-| Firma y verificación de tokens de sesión | JWT con HMAC-SHA256 (HS256) | `dart_jsonwebtoken` |
-| Cifrado de datos en reposo | AES-GCM 256 bits (cifrado autenticado) | `package:cryptography` |
-| Hash de contraseñas | Argon2id (memoria 19 MB, 2 iteraciones, salt aleatorio de 16 bytes) | `package:cryptography` |
-| Generación de secretos y sales | Generador aleatorio criptográficamente seguro (`Random.secure()`) | `dart:math` |
-| Almacenamiento en reposo | Keystore (Android) / Keychain (iOS-macOS) | `flutter_secure_storage` |
+
+| Propósito                                 | Algoritmo                                                           | Paquete                  |
+| ------------------------------------------ | ------------------------------------------------------------------- | ------------------------ |
+| Firma y verificación de tokens de sesión | JWT con HMAC-SHA256 (HS256)                                         | `dart_jsonwebtoken`      |
+| Cifrado de datos en reposo                 | AES-GCM 256 bits (cifrado autenticado)                              | `package:cryptography`   |
+| Hash de contraseñas                       | Argon2id (memoria 19 MB, 2 iteraciones, salt aleatorio de 16 bytes) | `package:cryptography`   |
+| Generación de secretos y sales            | Generador aleatorio criptográficamente seguro (`Random.secure()`)  | `dart:math`              |
+| Almacenamiento en reposo                   | Keystore (Android) / Keychain (iOS-macOS)                           | `flutter_secure_storage` |
