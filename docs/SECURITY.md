@@ -1,6 +1,6 @@
 # Seguridad de la aplicación
 
-Este documento resume el modelo de amenazas, las mitigaciones implementadas y las recomendaciones para mantener la seguridad de la app a largo plazo. Para la arquitectura del proyecto, los algoritmos utilizados y los diagramas de los flujos principales, ver [`lib/docs/arquitectura-y-seguridad.md`](lib/docs/arquitectura-y-seguridad.md).
+Este documento resume el modelo de amenazas, las mitigaciones implementadas y las recomendaciones para mantener la seguridad de la app a largo plazo. Para la arquitectura del proyecto, los algoritmos utilizados y los diagramas de los flujos principales, ver [`arquitectura-y-seguridad.md`](arquitectura-y-seguridad.md).
 
 ## Modelo de amenazas
 

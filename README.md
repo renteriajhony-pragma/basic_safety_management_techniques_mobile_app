@@ -2,7 +2,7 @@
 
 Aplicación móvil Flutter que implementa técnicas de seguridad para proteger la información de los usuarios: autenticación con tokens JWT, cifrado de datos sensibles, almacenamiento seguro respaldado por el sistema operativo y buenas prácticas adicionales de hardening.
 
-Para el detalle de qué se resolvió, la arquitectura del proyecto, los algoritmos utilizados y los diagramas de los flujos principales, ver [`lib/docs/arquitectura-y-seguridad.md`](lib/docs/arquitectura-y-seguridad.md). Para el modelo de amenazas y las recomendaciones de seguridad a largo plazo, ver [`SECURITY.md`](SECURITY.md).
+Para el detalle de qué se resolvió, la arquitectura del proyecto, los algoritmos utilizados y los diagramas de los flujos principales, ver [`docs/arquitectura-y-seguridad.md`](docs/arquitectura-y-seguridad.md). Para el modelo de amenazas y las recomendaciones de seguridad a largo plazo, ver [`docs/SECURITY.md`](docs/SECURITY.md).
 
 ## Requisitos
 
